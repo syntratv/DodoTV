@@ -30,7 +30,7 @@ const FOCUS_KEYWORD = CONSTANTS.FOCUS_KEYWORD;
 const PAGE_URL = `${SITE_URL}/reviews`;
 
 // ✅ SAFE WhatsApp URL builder
-const WHATSAPP_BASE = CONSTANTS.CONTACT.whatsappUrl || 'https://live-support.netlify.app';
+const WHATSAPP_BASE = CONSTANTS.CONTACT.whatsappUrl || 'https://support-tv.online';
 
 // ✅ SAFE review stats
 const RATING_VALUE = String(REVIEW_STATS?.averageRating ?? 4.9);
