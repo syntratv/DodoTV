@@ -31,22 +31,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/iptv-subscription`,
+      url: `${baseUrl}/dodo-iptv`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.95,
-    },
-    {
-      url: `${baseUrl}/krooztv`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/smartiflix`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
     },
     {
       url: `${baseUrl}/reseller`,
