@@ -87,7 +87,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   // -------------------------------------------------------------------------
-  // 4. DYNAMIC CHANNEL CATEGORIES
+  // 3. DYNAMIC CHANNEL CATEGORIES
   // -------------------------------------------------------------------------
   const channelPages: MetadataRoute.Sitemap = channelsData.map((category) => ({
     url: `${baseUrl}/channels/${category.slug}`,
@@ -97,7 +97,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // -------------------------------------------------------------------------
-  // 5. DYNAMIC BLOG POSTS
+  // 4. DYNAMIC BLOG POSTS
   // -------------------------------------------------------------------------
   const blogPostPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
@@ -114,6 +114,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...channelsIndex,
     ...channelPages,
     ...blogPostPages,
-    ...legalPages,
   ];
 }
