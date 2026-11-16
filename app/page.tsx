@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { CONSTANTS } from '@/lib/seo';
-import { ProductSchema, FAQSchema } from './components/PageSchemas';
+import { ServiceSchema , FAQSchema } from './components/PageSchemas';
 import { blogPosts } from '@/lib/blog';
 import {
   PlayCircle,
@@ -118,7 +118,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#04208B] text-[#f0ebd8] overflow-hidden">
-      <ProductSchema />
+      <ServiceSchema />
       <FAQSchema />
 
       {/* =========================================================
