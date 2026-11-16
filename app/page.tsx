@@ -43,6 +43,34 @@ import ShareButtons from './components/ShareButtons';
    Third Colors   : #f0ebd8 / #3e5c76 / #caf0f8 / #fdf0d5
    ========================================================= */
 
+/* =========================================================
+   🔧 BLOG HELPERS — dedupe + stable key
+   (fixes "two children with same key, 5" warning)
+   ========================================================= */
+type BlogPost = (typeof blogPosts)[number];
+
+function postKey(post: { slug?: string; id?: string | number }): string {
+  return post.slug ? String(post.slug) : String(post.id);
+}
+
+function dedupePosts(posts: BlogPost[]): BlogPost[] {
+  const seen = new Set<string>();
+  const out: BlogPost[] = [];
+  for (const p of posts) {
+    const k = postKey(p);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(p);
+  }
+  return out;
+}
+
+const latestPosts = dedupePosts(
+  [...blogPosts].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
+).slice(0, 3);
+
 const LoadingSpinner = () => (
   <div className="min-h-[600px] flex items-center justify-center">
     <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#ffc300] border-t-transparent" />
@@ -343,7 +371,6 @@ export default function Home() {
         </div>
       </section>
 
-
       {/* =========================================================
           TARGET COUNTRIES STRIP
           BG: #ffc300
@@ -353,7 +380,6 @@ export default function Home() {
           <TargetCountries />
         </div>
       </section>
-
 
       {/* =========================================================
           LIVING ROOM SECTION
@@ -717,16 +743,12 @@ export default function Home() {
         </div>
       </section>
 
-
-
       {/* =========================================================
           GLOBAL SERVER MAP
           ========================================================= */}
       <div className="min-h-[400px] bg-[#04208B]">
         {isMounted ? <GlobalServerMap /> : <div className="h-[400px] bg-transparent" />}
       </div>
-
-
 
       {/* =========================================================
           CHANNEL CATEGORIES
@@ -1555,8 +1577,8 @@ export default function Home() {
           </FadeIn>
 
           <FadeInStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
-            {blogPosts.slice(0, 3).map((post) => (
-              <div key={post.id} className="group cursor-pointer h-full">
+            {latestPosts.map((post) => (
+              <div key={postKey(post)} className="group cursor-pointer h-full">
                 <Link href={`/blog/${post.slug}`} className="block h-full">
                   <div className="bg-[#fdf0d5] text-[#04208B] rounded-3xl p-4 border-2 border-[#3e5c76]/20 shadow-md hover:border-[#ffc300] hover:shadow-[0_20px_40px_rgba(255,195,0,0.18)] hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full relative">
                     <div>

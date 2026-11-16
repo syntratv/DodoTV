@@ -180,14 +180,42 @@ function formatDate(dateStr: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// SORT POSTS BY DATE DESC
+// 🔧 FIX: DEDUPE + STABLE UNIQUE KEY
 // ---------------------------------------------------------------------------
-const sortedPosts = [...blogPosts].sort(
-  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+// The source `blogPosts` array contains duplicate entries (same `id` and/or
+// same `slug`). Dedupe by slug (falling back to id) so React never sees two
+// children with the same key, and so the featured post can't reappear in the
+// grid below.
+function dedupePosts<T extends { slug?: string; id?: string | number }>(
+  posts: T[]
+): T[] {
+  const seen = new Set<string>();
+  const out: T[] = [];
+  for (const post of posts) {
+    const key = post.slug ? String(post.slug) : String(post.id);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(post);
+  }
+  return out;
+}
+
+// Stable key used everywhere we render a post.
+function postKey(post: { slug?: string; id?: string | number }): string {
+  return post.slug ? String(post.slug) : String(post.id);
+}
+
+// ---------------------------------------------------------------------------
+// SORT + DEDUPE POSTS BY DATE DESC
+// ---------------------------------------------------------------------------
+const uniqueSortedPosts = dedupePosts(
+  [...blogPosts].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
 );
 
-const featuredPost = sortedPosts[0];
-const restPosts = sortedPosts.slice(1);
+const featuredPost = uniqueSortedPosts[0];
+const restPosts = uniqueSortedPosts.slice(1);
 
 // ---------------------------------------------------------------------------
 // JSON-LD SCHEMAS
@@ -204,7 +232,7 @@ const BlogSchema = () => {
         url: PAGE_URL,
         inLanguage: 'en-US',
         publisher: { '@id': `${SITE_URL}/#organization` },
-        blogPost: blogPosts.map((post) => ({
+        blogPost: uniqueSortedPosts.map((post) => ({
           '@type': 'BlogPosting',
           '@id': `${SITE_URL}/blog/${post.slug}/#article`,
           headline: post.title,
@@ -420,7 +448,7 @@ export default function BlogListing() {
   const currentPosts = postsForGrid.slice(0, POSTS_PER_PAGE);
 
   const tagCounts: Record<string, number> = {};
-  blogPosts.forEach((post) => {
+  uniqueSortedPosts.forEach((post) => {
     (post.keywords || []).forEach((kw: string) => {
       const clean = kw.toLowerCase().trim();
       if (clean.length > 2 && clean.length < 40) {
@@ -470,7 +498,7 @@ export default function BlogListing() {
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#EDEADE]/5 border border-white/10 text-[#EDEADE] text-xs font-black uppercase tracking-wider">
                 <TrendingUp className="w-3.5 h-3.5 text-[#FFD532]" />
-                {blogPosts.length} Articles
+                {uniqueSortedPosts.length} Articles
               </span>
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#EDEADE]/5 border border-white/10 text-[#EDEADE] text-xs font-black uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5 text-[#FFD532]" />
@@ -528,7 +556,11 @@ export default function BlogListing() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {currentPosts.map((post, i) => (
-              <BlogCard key={post.id} post={post} priority={i < 3} />
+              <BlogCard
+                key={postKey(post)}
+                post={post}
+                priority={i < 3}
+              />
             ))}
           </div>
 
