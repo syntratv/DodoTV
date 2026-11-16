@@ -4,174 +4,53 @@ import { CONSTANTS } from '@/lib/seo';
 
 const SITE_URL = CONSTANTS.SITE_URL;
 
-export function ProductSchema() {
-  const commonOfferDefaults = {
-    validFrom: '2025-01-01',
-    hasMerchantReturnPolicy: {
-      '@type': 'MerchantReturnPolicy',
-      applicableCountry: ['GB', 'US', 'AU'],
-      returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
-    },
-    shippingDetails: {
-      '@type': 'OfferShippingDetails',
-      shippingRate: {
-        '@type': 'MonetaryAmount',
-        value: '0.00',
-        currency: CONSTANTS.CURRENCY,
-      },
-      shippingDestination: {
-        '@type': 'DefinedRegion',
-        addressCountry: ['GB', 'US', 'AU'],
-      },
-      deliveryTime: {
-        '@type': 'ShippingDeliveryTime',
-        handlingTime: {
-          '@type': 'QuantitativeValue',
-          minValue: 0,
-          maxValue: 0,
-          unitCode: 'DAY',
-        },
-        transitTime: {
-          '@type': 'QuantitativeValue',
-          minValue: 0,
-          maxValue: 0,
-          unitCode: 'DAY',
-        },
-      },
-    },
-  };
-
-  const productSchema = {
+// ---------------------------------------------------------------------------
+// SERVICE SCHEMA (replaces old ProductSchema)
+//
+// Why Service instead of Product:
+//   • You sell a digital IPTV service, not a physical product.
+//   • Product schema requires review, aggregateRating, or offers to trigger
+//     a rich result — you have none that are legitimate.
+//   • The old file contained a fake aggregateRating (4.9 / 1255) and 9
+//     hardcoded offers with shipping details for a digital service. Both
+//     are structured-data policy violations that can trigger a manual action.
+//   • Service is semantically correct for an IPTV subscription.
+// ---------------------------------------------------------------------------
+export function ServiceSchema() {
+  const serviceSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
-    '@id': `${SITE_URL}/#product`,
-    name: `${CONSTANTS.BRAND_NAME} Premium Subscription`,
-    sku: `${CONSTANTS.BRAND_NAME.toUpperCase().replace(/\s+/g, '-')}-PREMIUM`,
-    category: 'Streaming Service',
-    description: `Experience premium ${CONSTANTS.FOCUS_KEYWORD} from ${CONSTANTS.BRAND_NAME}. Stream 36,000+ live TV channels and 120,000+ movies and series in crisp 4K Ultra HD. Built as the leading ${CONSTANTS.SECONDARY_FOCUS_KEYWORD} for ${CONSTANTS.TERTIARY_FOCUS_KEYWORD} entertainment — with fast WhatsApp support and a free no-obligation trial.`,
-    image: {
-      '@type': 'ImageObject',
-      '@id': `${SITE_URL}/#primaryimage`,
-      url: `${SITE_URL}/img/structer.webp`,
-      contentUrl: `${SITE_URL}/img/structer.webp`,
-      width: { '@type': 'QuantitativeValue', value: 1200 },
-      height: { '@type': 'QuantitativeValue', value: 630 },
-      caption: `${CONSTANTS.BRAND_NAME} - Premium ${CONSTANTS.TERTIARY_FOCUS_KEYWORD} Streaming Service`,
-      representativeOfPage: true,
-    },
-    brand: {
-      '@type': 'Brand',
-      name: CONSTANTS.BRAND_NAME,
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      reviewCount: '1255',
-      bestRating: '5',
-      worstRating: '1',
-    },
-    offers: [
-      {
-        '@type': 'Offer',
-        name: 'Standard - 1 Device (3 Months)',
-        price: '35.00',
-        priceCurrency: CONSTANTS.CURRENCY,
-        priceValidUntil: '2027-12-31',
-        availability: 'https://schema.org/InStock',
-        url: `${SITE_URL}/pricing`,
-        ...commonOfferDefaults,
-      },
-      {
-        '@type': 'Offer',
-        name: 'Standard - 1 Device (6 Months)',
-        price: '45.00',
-        priceCurrency: CONSTANTS.CURRENCY,
-        priceValidUntil: '2027-12-31',
-        availability: 'https://schema.org/InStock',
-        url: `${SITE_URL}/pricing`,
-        ...commonOfferDefaults,
-      },
-      {
-        '@type': 'Offer',
-        name: 'Standard - 1 Device (12 Months)',
-        price: '65.00',
-        priceCurrency: CONSTANTS.CURRENCY,
-        priceValidUntil: '2027-12-31',
-        availability: 'https://schema.org/InStock',
-        url: `${SITE_URL}/pricing`,
-        ...commonOfferDefaults,
-      },
-      {
-        '@type': 'Offer',
-        name: 'Premium - 2 Devices (3 Months)',
-        price: '45.00',
-        priceCurrency: CONSTANTS.CURRENCY,
-        priceValidUntil: '2027-12-31',
-        availability: 'https://schema.org/InStock',
-        url: `${SITE_URL}/pricing`,
-        ...commonOfferDefaults,
-      },
-      {
-        '@type': 'Offer',
-        name: 'Premium - 2 Devices (6 Months)',
-        price: '65.00',
-        priceCurrency: CONSTANTS.CURRENCY,
-        priceValidUntil: '2027-12-31',
-        availability: 'https://schema.org/InStock',
-        url: `${SITE_URL}/pricing`,
-        ...commonOfferDefaults,
-      },
-      {
-        '@type': 'Offer',
-        name: 'Premium - 2 Devices (12 Months)',
-        price: '85.00',
-        priceCurrency: CONSTANTS.CURRENCY,
-        priceValidUntil: '2027-12-31',
-        availability: 'https://schema.org/InStock',
-        url: `${SITE_URL}/pricing`,
-        ...commonOfferDefaults,
-      },
-      {
-        '@type': 'Offer',
-        name: 'VIP Multi-Room - 3 Devices (3 Months)',
-        price: '59.00',
-        priceCurrency: CONSTANTS.CURRENCY,
-        priceValidUntil: '2027-12-31',
-        availability: 'https://schema.org/InStock',
-        url: `${SITE_URL}/pricing`,
-        ...commonOfferDefaults,
-      },
-      {
-        '@type': 'Offer',
-        name: 'VIP Multi-Room - 3 Devices (6 Months)',
-        price: '79.00',
-        priceCurrency: CONSTANTS.CURRENCY,
-        priceValidUntil: '2027-12-31',
-        availability: 'https://schema.org/InStock',
-        url: `${SITE_URL}/pricing`,
-        ...commonOfferDefaults,
-      },
-      {
-        '@type': 'Offer',
-        name: 'VIP Multi-Room - 3 Devices (12 Months)',
-        price: '99.00',
-        priceCurrency: CONSTANTS.CURRENCY,
-        priceValidUntil: '2027-12-31',
-        availability: 'https://schema.org/InStock',
-        url: `${SITE_URL}/pricing`,
-        ...commonOfferDefaults,
-      },
-    ],
+    '@type': 'Service',
+    '@id': `${SITE_URL}/#service`,
+    name: `${CONSTANTS.BRAND_NAME} IPTV Service`,
+    serviceType: 'IPTV Streaming Service',
+    provider: { '@id': `${SITE_URL}/#organization` },
+    areaServed: 'Worldwide',
+    description: `Premium IPTV streaming from ${CONSTANTS.BRAND_NAME}. Live TV channels and on-demand movies in 4K Ultra HD, with instant setup and free trial.`,
+    url: SITE_URL,
   };
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      id="service-schema"
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(serviceSchema).replace(/</g, '\\u003c'),
+      }}
     />
   );
 }
 
+// ---------------------------------------------------------------------------
+// FAQ SCHEMA
+//
+// Notes:
+//   • Google deprecated FAQ rich results in May 2026 — no visible Q&A boxes
+//     in Google search anymore. Still useful for Bing and AI crawlers.
+//   • Policy: every question here MUST be visible on the same page.
+//     If your homepage renders fewer than 8 FAQs, delete the extra entries
+//     below so the schema stays accurate.
+// ---------------------------------------------------------------------------
 export function FAQSchema() {
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -182,7 +61,7 @@ export function FAQSchema() {
         name: `What makes ${CONSTANTS.BRAND_NAME} a premium ${CONSTANTS.SECONDARY_FOCUS_KEYWORD}?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `${CONSTANTS.BRAND_NAME} delivers excellent ${CONSTANTS.FOCUS_KEYWORD} TV streaming. Instead of traditional cable or satellite connections, we transmit 36,000+ live channels and more than 120,000 video-on-demand titles directly over your high-speed internet connection. Enjoy ultimate 4K quality on smart TVs, streaming sticks, and mobile devices.`,
+          text: `${CONSTANTS.BRAND_NAME} delivers excellent ${CONSTANTS.FOCUS_KEYWORD} TV streaming. Instead of traditional cable or satellite connections, we transmit live channels and video-on-demand titles directly over your high-speed internet connection. Enjoy 4K quality on smart TVs, streaming sticks, and mobile devices.`,
         },
       },
       {
@@ -247,7 +126,11 @@ export function FAQSchema() {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      id="faq-schema"
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c'),
+      }}
     />
   );
 }

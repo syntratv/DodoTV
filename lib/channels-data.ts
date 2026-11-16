@@ -44,7 +44,7 @@ export const channelsData: ChannelCategory[] = [
   // =========================================================================
   {
     slug: 'sports',
-    name: 'All Sports Channels',
+    name: 'All Sports',
     totalChannels: 3000,
     description:
       'Every major sport from around the world in smooth 60FPS. Includes ESPN, Fox Sports, NFL Network, NBA TV, MLB Network, NHL Network, UFC Fight Pass, DAZN, Sky Sports, plus every NFL, NBA, MLB, NHL, UFC, Premier League, AFL, NRL, and Formula 1 match.',
@@ -159,7 +159,7 @@ export const channelsData: ChannelCategory[] = [
   // =========================================================================
   {
     slug: 'usa',
-    name: 'USA Channels',
+    name: 'USA',
     totalChannels: 5000,
     description:
       'Full access to every major US network. ABC, CBS, NBC, FOX, HBO, Showtime, ESPN, CNN, and premium streaming originals in Full HD and 4K.',
@@ -258,7 +258,7 @@ export const channelsData: ChannelCategory[] = [
   // =========================================================================
   {
     slug: 'europe',
-    name: 'UK & Europe Channels',
+    name: 'UK & Europe',
     totalChannels: 8000,
     description:
       'Every major European broadcaster. BBC, ITV, Channel 4, Sky, TF1, France 2, ARD, ZDF, RAI, TVE, RTL, and premium channels from the UK, France, Germany, Spain, Italy, and across the continent.',
@@ -377,7 +377,7 @@ export const channelsData: ChannelCategory[] = [
   // =========================================================================
   {
     slug: 'canadian',
-    name: 'Canadian Channels',
+    name: 'Canadian',
     totalChannels: 500,
     description:
       'Complete Canadian broadcasting lineup. CBC, CTV, Global, Citytv, TSN, Sportsnet, TVA, Radio-Canada, and regional channels with EPG and catch up.',
@@ -474,7 +474,7 @@ export const channelsData: ChannelCategory[] = [
   // =========================================================================
   {
     slug: 'australian',
-    name: 'Australian Channels',
+    name: 'Australian',
     totalChannels: 500,
     description:
       'The complete lineup of Australian public and commercial networks in Full HD. Nine, Seven, ABC, SBS, Network 10, Fox8, and regional stations with 7 day catch up and EPG.',
@@ -533,7 +533,7 @@ export const channelsData: ChannelCategory[] = [
   // =========================================================================
   {
     slug: 'asia-middle-east',
-    name: 'Asia & Middle East Channels',
+    name: 'Asia & Middle East',
     totalChannels: 12000,
     description:
       'The largest selection of Asian and Middle Eastern television. CCTV, Zee TV, Star Plus, PTV, Geo TV, NHK, KBS, Al Jazeera, and every major broadcaster from China, India, Pakistan, Japan, Korea, and the Middle East.',

@@ -2,34 +2,23 @@
 import type { Metadata } from 'next';
 import { CONSTANTS } from '@/lib/seo';
 
-// SEO CONSTANTS
 const SITE_URL = CONSTANTS.SITE_URL;
 const BRAND = CONSTANTS.BRAND_NAME;
 const YEAR = new Date().getFullYear();
 const PAGE_URL = `${SITE_URL}/reseller`;
 
 // ---------------------------------------------------------------------------
-// SEO SAFETY HELPERS
+// SEO STRINGS — no price in title, no fake hreflang
 // ---------------------------------------------------------------------------
-const clampTitle = (s: string, max = 60): string =>
-  s.length <= max ? s : s.slice(0, max - 1).trimEnd() + '…';
+const PAGE_TITLE = `IPTV Reseller Program | ${BRAND}`;
 
-const clampDescription = (s: string, max = 158): string =>
-  s.length <= max ? s : s.slice(0, max - 3).trimEnd() + '...';
-
-// ---------------------------------------------------------------------------
-// SEO STRINGS
-// ---------------------------------------------------------------------------
-const PAGE_TITLE = clampTitle(
-  `IPTV Reseller Program | Start at $299`
-);
-
-const PAGE_DESCRIPTION = clampDescription(
-  `Become an IPTV reseller from $299. Buy wholesale credits, sell yearly at $60–120, earn up to $90 profit per sale. Instant panel access.`
-);
+const PAGE_DESCRIPTION =
+  `Become a ${BRAND} IPTV reseller. Buy wholesale credits, ` +
+  `sell subscriptions at your own price, and manage every customer ` +
+  `from a private reseller panel. Instant activation.`;
 
 // ---------------------------------------------------------------------------
-// METADATA CONFIGURATION
+// METADATA
 // ---------------------------------------------------------------------------
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -40,29 +29,16 @@ export const metadata: Metadata = {
     'iptv reseller program',
     'become iptv reseller',
     'iptv reseller panel',
-    'best iptv reseller',
     'iptv credits',
     'iptv wholesale',
-    'iptv reseller business',
-    'reseller iptv subscription',
   ],
   authors: [{ name: `${BRAND} Team` }],
   creator: BRAND,
   publisher: BRAND,
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
+  formatDetection: { email: false, address: false, telephone: false },
   alternates: {
     canonical: PAGE_URL,
-    languages: {
-      'en-US': PAGE_URL,
-      'en-CA': PAGE_URL,
-      'en-GB': PAGE_URL,
-      'en-AU': PAGE_URL,
-      'x-default': PAGE_URL,
-    },
+    // hreflang removed — no localized versions exist
   },
   openGraph: {
     title: PAGE_TITLE,
@@ -76,7 +52,7 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/img/blog/article-reseller/cover.webp`,
         width: 1200,
         height: 630,
-        alt: `${BRAND} IPTV Reseller Program ${YEAR}`,
+        alt: `${BRAND} IPTV Reseller Program`,
       },
     ],
   },
@@ -101,40 +77,23 @@ export const metadata: Metadata = {
 };
 
 // ---------------------------------------------------------------------------
-// JSON-LD SCHEMAS — WebPage + Service + Product + FAQ + Breadcrumbs
+// JSON-LD — WebPage + Service + FAQ + Breadcrumb. NO Product.
 // ---------------------------------------------------------------------------
 const ResellerSchema = () => {
-  const currentDate = new Date().toISOString().split('T')[0];
-
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
-      // WEBPAGE
       {
         '@type': 'WebPage',
         '@id': `${PAGE_URL}/#webpage`,
         url: PAGE_URL,
-        name: `IPTV Reseller Program | ${BRAND}`,
+        name: PAGE_TITLE,
         description: PAGE_DESCRIPTION,
         inLanguage: CONSTANTS.LANGUAGE,
         isPartOf: { '@id': `${SITE_URL}/#website` },
         about: { '@id': `${SITE_URL}/#organization` },
         breadcrumb: { '@id': `${PAGE_URL}/#breadcrumb` },
-        primaryImageOfPage: { '@id': `${PAGE_URL}/#primaryimage` },
       },
-
-      // PRIMARY IMAGE
-      {
-        '@type': 'ImageObject',
-        '@id': `${PAGE_URL}/#primaryimage`,
-        url: `${SITE_URL}/img/blog/article-reseller/cover.webp`,
-        contentUrl: `${SITE_URL}/img/blog/article-reseller/cover.webp`,
-        width: 1200,
-        height: 630,
-        caption: `${BRAND} IPTV Reseller Program ${YEAR}`,
-      },
-
-      // BREADCRUMB
       {
         '@type': 'BreadcrumbList',
         '@id': `${PAGE_URL}/#breadcrumb`,
@@ -148,79 +107,18 @@ const ResellerSchema = () => {
           },
         ],
       },
-
-      // SERVICE — B2B Offering
       {
         '@type': 'Service',
         '@id': `${PAGE_URL}/#service`,
-        name: `IPTV Reseller Program ${YEAR}`,
-        description: `Become an IPTV reseller with ${BRAND}. Buy wholesale credits, sell yearly subscriptions at $60 to $120, and earn up to $90 profit per customer.`,
+        name: 'IPTV Reseller Program',
+        description:
+          `Become a ${BRAND} IPTV reseller. Buy wholesale credits, ` +
+          `sell subscriptions at your own price, and manage every ` +
+          `customer from a private reseller panel.`,
         provider: { '@id': `${SITE_URL}/#organization` },
-        areaServed: [
-          { '@type': 'Country', name: 'United Kingdom' },
-          { '@type': 'Country', name: 'United States' },
-          { '@type': 'Country', name: 'Australia' },
-        ],
+        areaServed: 'Worldwide',
         serviceType: 'IPTV Reseller Panel',
-        offers: [
-          {
-            '@type': 'Offer',
-            name: 'Starter Reseller Package (10 Credits)',
-            price: '299.00',
-            priceCurrency: 'USD',
-            availability: 'https://schema.org/InStock',
-            url: PAGE_URL,
-            validFrom: currentDate,
-            description:
-              '10 reseller credits, full panel access, 24/7 WhatsApp support. Credits never expire.',
-          },
-          {
-            '@type': 'Offer',
-            name: 'Growth Reseller Package (20 Credits)',
-            price: '549.00',
-            priceCurrency: 'USD',
-            availability: 'https://schema.org/InStock',
-            url: PAGE_URL,
-            validFrom: currentDate,
-            description:
-              '20 reseller credits, priority support, API access, credits never expire.',
-          },
-          {
-            '@type': 'Offer',
-            name: 'Pro Reseller Package (30 Credits)',
-            price: '749.00',
-            priceCurrency: 'USD',
-            availability: 'https://schema.org/InStock',
-            url: PAGE_URL,
-            validFrom: currentDate,
-            description:
-              '30 reseller credits, dedicated support, white label option, full API access.',
-          },
-        ],
       },
-
-      // PRODUCT + AGGREGATEOFFER
-      {
-        '@type': 'Product',
-        '@id': `${PAGE_URL}/#product`,
-        name: `${BRAND} IPTV Reseller Program`,
-        description: `Wholesale IPTV reseller credits. Buy in bulk, resell at your own price.`,
-        brand: {
-          '@id': `${SITE_URL}/#organization`,
-        },
-        category: 'Business Service',
-        offers: {
-          '@type': 'AggregateOffer',
-          priceCurrency: 'USD',
-          lowPrice: '299.00',
-          highPrice: '749.00',
-          offerCount: '3',
-          availability: 'https://schema.org/InStock',
-          url: PAGE_URL,
-        },
-      },
-
-      // FAQ SECTION
       {
         '@type': 'FAQPage',
         '@id': `${PAGE_URL}/#faq`,
@@ -238,7 +136,7 @@ const ResellerSchema = () => {
             name: 'How much can I realistically earn as an IPTV reseller?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Customers typically pay between $60 and $120 per year. Your wholesale cost starts around $30 per credit, so your profit per sale ranges from $30 to $90. Sell 10 subscriptions at $90 and you have earned roughly $600 profit from a $299 investment.',
+              text: 'Customers typically pay between $60 and $120 per year. Your wholesale cost starts around $30 per credit, so your profit per sale ranges from $30 to $90.',
             },
           },
           {
@@ -246,7 +144,7 @@ const ResellerSchema = () => {
             name: 'Do I need technical skills to become a reseller?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'No. The reseller panel is designed to be simple. If you can use WhatsApp and a web browser, you can run a reseller business. We provide onboarding guidance over WhatsApp any time you get stuck.',
+              text: 'No. The reseller panel is designed to be simple. If you can use WhatsApp and a web browser, you can run a reseller business.',
             },
           },
           {
@@ -254,7 +152,7 @@ const ResellerSchema = () => {
             name: 'Do the reseller credits expire?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'No. Your credits stay in your account indefinitely. There is no expiration date, no monthly minimum, and no pressure to sell quickly.',
+              text: 'No. Your credits stay in your account indefinitely. There is no expiration date and no monthly minimum.',
             },
           },
           {
@@ -262,7 +160,15 @@ const ResellerSchema = () => {
             name: 'Which currencies can I sell in?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'You can sell to your customers in any currency you prefer. Your wholesale cost with us is fixed in USD. Your retail price is completely up to you, so you control your margin.',
+              text: 'You can sell in any currency you prefer. Your wholesale cost is fixed in USD. Your retail price is up to you.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'What kind of support do I get as a reseller?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Every reseller gets direct WhatsApp support from our team, with priority response times on higher tiers.',
             },
           },
         ],
@@ -275,14 +181,13 @@ const ResellerSchema = () => {
       type="application/ld+json"
       id="reseller-page-schema"
       suppressHydrationWarning
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+      }}
     />
   );
 };
 
-// ---------------------------------------------------------------------------
-// RESPONSIVE RESELLER LAYOUT
-// ---------------------------------------------------------------------------
 export default function ResellerLayout({
   children,
 }: {

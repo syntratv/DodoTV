@@ -36,9 +36,10 @@ const clampDescription = (s: string, max = 160): string =>
 
 // ---------------------------------------------------------------------------
 // SEO STRINGS — CONTENT-FIRST, REGION-AGNOSTIC
+// (typo "Chennles" → "Channels" fixed)
 // ---------------------------------------------------------------------------
 const SEO_TITLE = clampTitle(
-  `Dodo IPTV - Best IPTV Provider 36,000 Live TV Chennles`
+  `Dodo IPTV - Best IPTV Provider 36,000 Live TV Channels`
 );
 
 const SEO_DESCRIPTION = clampDescription(
@@ -62,22 +63,36 @@ export const viewport: Viewport = {
 
 // ---------------------------------------------------------------------------
 // GLOBAL METADATA
+//
+// ⚠️ IMPORTANT: The `alternates` block has been REMOVED from this root
+// layout. The previous `canonical: './'` was making EVERY page on the site
+// declare the homepage as its canonical URL, which caused Google to treat
+// all sub-pages as duplicates of `/` (result: "Discovered – currently not
+// indexed" for all URLs).
+//
+// Each page/layout now declares its own canonical explicitly. The homepage
+// should set `alternates.canonical: SITE_URL` in `app/page.tsx`.
 // ---------------------------------------------------------------------------
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+
   title: {
     default: SEO_TITLE,
     template: `%s | Dodo IPTV`,
   },
+
   description: SEO_DESCRIPTION,
+
   authors: [{ name: 'Dodo IPTV' }],
   creator: 'Dodo IPTV',
   publisher: 'Dodo IPTV',
+
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
+
   robots: {
     index: true,
     follow: true,
@@ -89,15 +104,10 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  alternates: {
-    canonical: './',
-    languages: {
-      'en-GB': SITE_URL,
-      'en-US': SITE_URL,
-      'en-AU': SITE_URL,
-      'x-default': SITE_URL,
-    },
-  },
+
+  // ✅ NO `alternates` here — canonical is declared per-page.
+  // ✅ NO `languages` here — no localized versions exist.
+
   openGraph: {
     title: SEO_OG_TITLE,
     description: SEO_OG_DESCRIPTION,
@@ -114,12 +124,14 @@ export const metadata: Metadata = {
       },
     ],
   },
+
   twitter: {
     card: 'summary_large_image',
     title: SEO_TWITTER_TITLE,
     description: SEO_TWITTER_DESCRIPTION,
     images: [`${SITE_URL}/img/structer.webp`],
   },
+
   icons: {
     icon: [
       { url: '/img/favicons/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
@@ -150,18 +162,23 @@ export const metadata: Metadata = {
       },
     ],
   },
+
   manifest: '/img/favicons/site.webmanifest',
+
   appleWebApp: {
     capable: true,
     title: 'Dodo IPTV',
     statusBarStyle: 'black-translucent',
   },
+
   other: {
     'msapplication-TileColor': '#04208B',
     'msapplication-TileImage': '/img/favicons/mstile-144x144.png',
     'msapplication-config': '/img/favicons/browserconfig.xml',
   },
+
   category: 'entertainment',
+
   keywords: [
     'Best IPTV Provider',
     'Dodo IPTV',
@@ -187,7 +204,7 @@ export const metadata: Metadata = {
 };
 
 // ---------------------------------------------------------------------------
-// SITE-WIDE SCHEMAS — BRAND appears here only (schema fields)
+// SITE-WIDE SCHEMAS — Organization + WebSite
 // ---------------------------------------------------------------------------
 const OrganizationSchema = () => (
   <script
@@ -219,7 +236,7 @@ const OrganizationSchema = () => (
           CONSTANTS.SOCIALS.instagram,
           CONSTANTS.SOCIALS.facebook,
         ],
-      }),
+      }).replace(/</g, '\\u003c'),
     }}
   />
 );
@@ -239,7 +256,7 @@ const WebSiteSchema = () => (
         alternateName: `${CONSTANTS.BRAND_NAME} - Best IPTV Provider`,
         publisher: { '@id': `${SITE_URL}/#organization` },
         inLanguage: 'en-US',
-      }),
+      }).replace(/</g, '\\u003c'),
     }}
   />
 );

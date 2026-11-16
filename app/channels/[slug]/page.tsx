@@ -4,7 +4,7 @@ import {
   getAllCategorySlugs,
   type CountryCode,
 } from '@/lib/channels-data';
-import { CONSTANTS, generateSEOMetadata } from '@/lib/seo';
+import { CONSTANTS } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
@@ -30,7 +30,13 @@ import ShareButtons from '../../components/ShareButtons';
 
 const SITE_URL = CONSTANTS.SITE_URL;
 const BRAND = CONSTANTS.BRAND_NAME;
-const FOCUS_KEYWORD = CONSTANTS.FOCUS_KEYWORD;
+
+// ---------------------------------------------------------------------------
+// CATEGORY HEADING HELPER — prevents "UK & Europe Channels Channels"
+// ---------------------------------------------------------------------------
+function getCategoryHeading(name: string) {
+  return `${name.replace(/\s+channels$/i, '').trim()} Channels`;
+}
 
 // ---------------------------------------------------------------------------
 // COUNTRY FLAG — complete support for every country in channels-data.ts
@@ -297,31 +303,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = getChannelCategoryBySlug(resolvedParams.slug);
 
   if (!category) {
-    return generateSEOMetadata('Channel Category Not Found');
+    return {
+      title: 'Channel Category Not Found',
+      robots: { index: false, follow: false },
+    };
   }
 
-  const title = `${category.name} | ${BRAND} 4K Streaming 2026`;
-  const description = `Watch ${category.name.toLowerCase()} on ${BRAND} — ${category.totalChannels.toLocaleString('en-US')}+ live channels including ${category.channels.slice(0, 3).map((c) => c.name).join(', ')}.`;
+  const categoryHeading = getCategoryHeading(category.name);
+  const categoryUrl = `${SITE_URL}/channels/${category.slug}`;
+
+  const featuredChannels = category.channels
+    .slice(0, 3)
+    .map((c) => c.name)
+    .join(', ');
+
+  const title = `${categoryHeading} | ${BRAND}`;
+
+  const description =
+    `Explore ${categoryHeading.toLowerCase()} with ${BRAND}. ` +
+    `${category.totalChannels.toLocaleString('en-US')}+ listed channels, ` +
+    `including ${featuredChannels}. Browse available channels and streaming options.`;
 
   return {
     metadataBase: new URL(SITE_URL),
-    title: { default: title, absolute: title },
+    title: { absolute: title },
     description,
     keywords: category.keywords.join(', '),
     alternates: {
-      canonical: `${SITE_URL}/channels/${category.slug}`,
-      languages: {
-        'en-US': `${SITE_URL}/channels/${category.slug}`,
-        'en-CA': `${SITE_URL}/channels/${category.slug}`,
-        'en-GB': `${SITE_URL}/channels/${category.slug}`,
-        'en-AU': `${SITE_URL}/channels/${category.slug}`,
-        'x-default': `${SITE_URL}/channels/${category.slug}`,
-      },
+      canonical: categoryUrl,
     },
     openGraph: {
       title,
       description,
-      url: `${SITE_URL}/channels/${category.slug}`,
+      url: categoryUrl,
       type: 'website',
       locale: 'en_US',
       siteName: BRAND,
@@ -330,7 +344,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           url: `${SITE_URL}/img/background.webp`,
           width: 1200,
           height: 630,
-          alt: `${category.name} - ${BRAND} Channels`,
+          alt: `${categoryHeading} - ${BRAND}`,
         },
       ],
     },
@@ -367,6 +381,8 @@ export default async function ChannelCategoryPage({ params }: Props) {
 
   const whatsappBaseUrl = CONSTANTS.CONTACT.whatsappUrl;
   const Icon = categoryIcons[category.slug] || Tv;
+  const categoryHeading = getCategoryHeading(category.name);
+  const categoryUrl = `${SITE_URL}/channels/${category.slug}`;
 
   // Sort so popular channels appear first
   const popularChannels = category.channels.filter((c) => c.popular);
@@ -378,25 +394,37 @@ export default async function ChannelCategoryPage({ params }: Props) {
     '@graph': [
       {
         '@type': 'BreadcrumbList',
-        '@id': `${SITE_URL}/channels/${category.slug}/#breadcrumb`,
+        '@id': `${categoryUrl}/#breadcrumb`,
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-          { '@type': 'ListItem', position: 2, name: 'Channels', item: `${SITE_URL}/#channels` },
-          { '@type': 'ListItem', position: 3, name: category.name, item: `${SITE_URL}/channels/${category.slug}` },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Channels',
+            item: `${SITE_URL}/channels`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: categoryHeading,
+            item: categoryUrl,
+          },
         ],
       },
       {
         '@type': 'CollectionPage',
-        '@id': `${SITE_URL}/channels/${category.slug}/#collection`,
-        url: `${SITE_URL}/channels/${category.slug}`,
-        name: `${category.name} | ${BRAND}`,
+        '@id': `${categoryUrl}/#collection`,
+        url: categoryUrl,
+        name: categoryHeading,
         description: category.description,
         inLanguage: 'en-US',
         isPartOf: { '@id': `${SITE_URL}/#website` },
+        mainEntity: { '@id': `${categoryUrl}/#channel-list` },
       },
       {
         '@type': 'ItemList',
-        name: `${category.name} Channels`,
+        '@id': `${categoryUrl}/#channel-list`,
+        name: categoryHeading,
         numberOfItems: category.channels.length,
         itemListElement: category.channels.map((ch, i) => ({
           '@type': 'ListItem',
@@ -406,24 +434,8 @@ export default async function ChannelCategoryPage({ params }: Props) {
         })),
       },
       {
-        '@type': 'Product',
-        name: `${BRAND} — ${category.name}`,
-        image: `${SITE_URL}/img/background.webp`,
-        description: category.description,
-        brand: { '@type': 'Brand', name: BRAND },
-        offers: {
-          '@type': 'AggregateOffer',
-          priceCurrency: 'USD',
-          lowPrice: '35.00',
-          highPrice: '99.00',
-          offerCount: '9',
-          availability: 'https://schema.org/InStock',
-          url: `${SITE_URL}/pricing`,
-        },
-      },
-      {
         '@type': 'FAQPage',
-        '@id': `${SITE_URL}/channels/${category.slug}/#faq`,
+        '@id': `${categoryUrl}/#faq`,
         mainEntity: category.faqs.map((faq) => ({
           '@type': 'Question',
           name: faq.question,
@@ -440,7 +452,9 @@ export default async function ChannelCategoryPage({ params }: Props) {
         type="application/ld+json"
         id="channel-category-schema"
         suppressHydrationWarning
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdGraph) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLdGraph).replace(/</g, '\\u003c'),
+        }}
       />
 
       {/* HERO */}
@@ -464,7 +478,7 @@ export default async function ChannelCategoryPage({ params }: Props) {
             <span>/</span>
             <span className="text-[#EDEADE]/80">Channels</span>
             <span>/</span>
-            <span className="text-[#FFD532]">{category.name}</span>
+            <span className="text-[#FFD532]">{categoryHeading}</span>
           </div>
 
           <div className="inline-flex items-center gap-2 bg-[#1C65CE] px-4 py-2 rounded-full mb-6 shadow-lg border border-[#FFD532]/30">
@@ -474,8 +488,10 @@ export default async function ChannelCategoryPage({ params }: Props) {
             </span>
           </div>
 
+          {/* FIXED H1 — no duplicate "Channels" */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-[#EDEADE] tracking-tighter uppercase mb-6 leading-none whitespace-normal break-words">
-            {category.name} <br className="hidden sm:block" />
+            {category.name.replace(/\s+channels$/i, '').trim()}{' '}
+            <br className="hidden sm:block" />
             <span className="text-[#FFD532]">Channels</span>
           </h1>
 
@@ -519,7 +535,7 @@ export default async function ChannelCategoryPage({ params }: Props) {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <h2 className="text-2xl sm:text-4xl font-black text-[#EDEADE] uppercase tracking-tight">
-              Available <span className="text-[#FFD532]">{category.name}</span>
+              Available <span className="text-[#FFD532]">{categoryHeading}</span>
             </h2>
             <p className="text-[#EDEADE]/70 font-bold text-sm sm:text-base mt-2">
               Popular channels shown first. Every channel streams in FHD or 4K with low latency and 7 day catch up.
@@ -633,7 +649,7 @@ export default async function ChannelCategoryPage({ params }: Props) {
 
           <div className="mb-16">
             <h2 className="text-2xl sm:text-3xl font-black text-[#EDEADE] uppercase tracking-tight mb-8 text-center">
-              Frequently Asked Questions about <span className="text-[#FFD532]">{category.name}</span>
+              Frequently Asked Questions about <span className="text-[#FFD532]">{categoryHeading}</span>
             </h2>
 
             <div className="space-y-4">
@@ -655,7 +671,7 @@ export default async function ChannelCategoryPage({ params }: Props) {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,213,50,0.12),_transparent_70%)] pointer-events-none" />
             <div className="relative z-10">
               <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#EDEADE] uppercase tracking-tighter leading-tight mb-4">
-                Ready to Watch {category.name}?
+                Ready to Watch {categoryHeading}?
               </h3>
               <p className="text-[#EDEADE]/90 text-sm sm:text-base font-bold max-w-xl mx-auto mb-6">
                 Message our team on WhatsApp. We will activate IPTV Smarters Pro for you and set up your subscription in under 10 minutes.
@@ -674,8 +690,8 @@ export default async function ChannelCategoryPage({ params }: Props) {
 
           <div className="w-full flex justify-center items-center my-10">
             <ShareButtons
-              title={`${category.name} - ${BRAND}`}
-              url={`${SITE_URL}/channels/${category.slug}`}
+              title={`${categoryHeading} - ${BRAND}`}
+              url={categoryUrl}
             />
           </div>
 
