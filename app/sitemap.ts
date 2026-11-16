@@ -87,36 +87,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   // -------------------------------------------------------------------------
-  // 3. LEGAL & POLICY PAGES
-  // -------------------------------------------------------------------------
-  const legalPages: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/refund-policy`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/dmca`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-  ];
-
-  // -------------------------------------------------------------------------
   // 4. DYNAMIC CHANNEL CATEGORIES
   // -------------------------------------------------------------------------
   const channelPages: MetadataRoute.Sitemap = channelsData.map((category) => ({

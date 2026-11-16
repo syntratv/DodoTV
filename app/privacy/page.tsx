@@ -17,11 +17,21 @@ const PAGE_URL = `${SITE_URL}/privacy`;
 // ---------------------------------------------------------------------------
 // METADATA
 // ---------------------------------------------------------------------------
-export const metadata = generateSEOMetadata(
-  'Privacy Policy & Data Protection',
-  `Read how ${BRAND} safeguards your privacy and personal data in compliance with global privacy law, including GDPR (EU), UK GDPR, CCPA (California), and Australian privacy law. 100% confidential.`,
-  '/privacy'
-);
+export const metadata = {
+  ...generateSEOMetadata(
+    'Privacy Policy & Data Protection',
+    `Read how ${BRAND} safeguards your privacy and personal data in compliance with global privacy law, including GDPR (EU), UK GDPR, CCPA (California), and Australian privacy law. 100% confidential.`,
+    '/privacy'
+  ),
+  robots: {
+    index: false,
+    follow: true,
+    googleBot: {
+      index: false,
+      follow: true,
+    },
+  },
+};
 
 // ---------------------------------------------------------------------------
 // JSON-LD

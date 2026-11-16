@@ -21,11 +21,21 @@ const PAGE_URL = `${SITE_URL}/refund-policy`;
 // ---------------------------------------------------------------------------
 // METADATA
 // ---------------------------------------------------------------------------
-export const metadata = generateSEOMetadata(
-  'Refund & Guarantee Policy',
-  `Read the official terms of the ${BRAND} 7 day quality guarantee. Transparent technical guidelines and support procedures.`,
-  '/refund-policy'
-);
+export const metadata = {
+  ...generateSEOMetadata(
+    'Refund & Guarantee Policy',
+    `Read the official terms of the ${BRAND} 7 day quality guarantee. Transparent technical guidelines and support procedures.`,
+    '/refund-policy'
+  ),
+  robots: {
+    index: false,
+    follow: true,
+    googleBot: {
+      index: false,
+      follow: true,
+    },
+  },
+};
 
 // ---------------------------------------------------------------------------
 // JSON-LD

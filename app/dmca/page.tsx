@@ -16,11 +16,21 @@ const PAGE_URL = `${SITE_URL}/dmca`;
 // ---------------------------------------------------------------------------
 // METADATA
 // ---------------------------------------------------------------------------
-export const metadata = generateSEOMetadata(
-  'DMCA & Copyright Policy',
-  `Read the official DMCA and copyright policy of ${BRAND}. Information on copyright protection and the procedure for filing takedown requests.`,
-  '/dmca'
-);
+export const metadata = {
+  ...generateSEOMetadata(
+    'DMCA & Copyright Policy',
+    `Read the official DMCA and copyright policy of ${BRAND}. Information on copyright protection and the procedure for filing takedown requests.`,
+    '/dmca'
+  ),
+  robots: {
+    index: false,
+    follow: true,
+    googleBot: {
+      index: false,
+      follow: true,
+    },
+  },
+};
 
 // ---------------------------------------------------------------------------
 // JSON-LD
